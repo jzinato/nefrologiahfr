@@ -1,0 +1,5 @@
+{
+  "name": "CKD Lab Analyzer AI",
+  "description": "An AI-powered tool to analyze monthly lab results for dialysis patients based on Brazilian clinical guidelines (PCDT) for Anemia and Mineral/Bone Disorder. Provides evaluation and potential courses of action. This is not a substitute for professional medical advice.",
+  "requestFramePermissions": []
+}
