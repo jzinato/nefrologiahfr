@@ -1,5 +1,5 @@
 {
-  "name": "CKD Lab Analyzer AI",
-  "description": "An AI-powered tool to analyze monthly lab results for dialysis patients based on Brazilian clinical guidelines (PCDT) for Anemia and Mineral/Bone Disorder. Provides evaluation and potential courses of action. This is not a substitute for professional medical advice.",
+  "name": "IA Analisador de Exames DRC",
+  "description": "Uma ferramenta com IA para analisar resultados de exames mensais de pacientes em diálise, com base nos Protocolos Clínicos e Diretrizes Terapêuticas (PCDT) brasileiros para Anemia e Distúrbio Mineral e Ósseo. Fornece avaliação e possíveis planos de ação. Não substitui o aconselhamento médico profissional.",
   "requestFramePermissions": []
 }

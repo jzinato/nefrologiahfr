@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { PatientData, AnalysisResult } from './types';
 import { analyzePatientData } from './services/geminiService';
@@ -23,7 +22,7 @@ const App: React.FC = () => {
       setAnalysisResult(result);
     } catch (err) {
       console.error(err);
-      setError('An error occurred while analyzing the data. Please check your API key and try again.');
+      setError('Ocorreu um erro ao analisar os dados. Por favor, verifique sua chave de API e tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -37,7 +36,7 @@ const App: React.FC = () => {
             <div className="bg-blue-600 text-white p-2 rounded-full">
               <StethoscopeIcon className="w-6 h-6" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900">CKD Lab Analyzer AI</h1>
+            <h1 className="text-2xl font-bold text-slate-900">IA Analisador de Exames DRC</h1>
           </div>
            <div className="flex items-center space-x-2 text-sm text-slate-500">
              <ZapIcon className="w-4 h-4 text-yellow-500" />
@@ -64,7 +63,7 @@ const App: React.FC = () => {
       </main>
       
       <footer className="text-center py-4 mt-8 text-sm text-slate-500 border-t border-slate-200">
-        <p>&copy; {new Date().getFullYear()} CKD Lab Analyzer AI. For educational and informational purposes only.</p>
+        <p>&copy; {new Date().getFullYear()} IA Analisador de Exames DRC. Apenas para fins educacionais e informativos.</p>
       </footer>
     </div>
   );

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AlertTriangleIcon } from './Icons';
 
@@ -11,9 +10,9 @@ const Disclaimer: React.FC = () => {
         </div>
         <div className="ml-3">
           <p className="text-sm text-yellow-700">
-            <span className="font-bold">AI-Generated Analysis:</span> This tool provides suggestions based on clinical guidelines but is{' '}
-            <span className="font-bold underline">not a substitute for professional medical advice</span>.
-            Always consult with a qualified healthcare provider for diagnosis and treatment decisions.
+            <span className="font-bold">Análise Gerada por IA:</span> Esta ferramenta fornece sugestões baseadas em diretrizes clínicas, mas{' '}
+            <span className="font-bold underline">não substitui o aconselhamento médico profissional</span>.
+            Sempre consulte um profissional de saúde qualificado para diagnóstico e decisões de tratamento.
           </p>
         </div>
       </div>

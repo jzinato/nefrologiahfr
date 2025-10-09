@@ -37,10 +37,10 @@ const PatientDataForm: React.FC<PatientDataFormProps> = ({ onSubmit, isLoading }
     const rules = validationRanges[name];
     if (rules) {
       if (isNaN(value)) {
-        return 'Please enter a valid number.';
+        return 'Por favor, insira um número válido.';
       }
       if (value < rules.min || value > rules.max) {
-        return `Value must be between ${rules.min} and ${rules.max} ${rules.unit}.`;
+        return `O valor deve estar entre ${rules.min} e ${rules.max} ${rules.unit}.`;
       }
     }
     return '';
@@ -97,59 +97,59 @@ const PatientDataForm: React.FC<PatientDataFormProps> = ({ onSubmit, isLoading }
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md sticky top-8">
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Patient Lab Data</h2>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6">Dados Laboratoriais do Paciente</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         
         <fieldset className="grid grid-cols-1 gap-y-4 gap-x-4">
-          <legend className="text-lg font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-2 col-span-full">General Information</legend>
+          <legend className="text-lg font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-2 col-span-full">Informações Gerais</legend>
           <div>
-            <label htmlFor="ckdStage" className={labelClass}>CKD Stage</label>
+            <label htmlFor="ckdStage" className={labelClass}>Estágio da DRC</label>
             <select id="ckdStage" name="ckdStage" value={formData.ckdStage} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-slate-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-              <option value="3a">Stage 3a</option>
-              <option value="3b">Stage 3b</option>
-              <option value="4">Stage 4</option>
-              <option value="5">Stage 5 (non-dialysis)</option>
-              <option value="5D">Stage 5D (dialysis)</option>
+              <option value="3a">Estágio 3a</option>
+              <option value="3b">Estágio 3b</option>
+              <option value="4">Estágio 4</option>
+              <option value="5">Estágio 5 (não dialítico)</option>
+              <option value="5D">Estágio 5D (em diálise)</option>
             </select>
           </div>
           <div>
-            <label htmlFor="dialysisType" className={labelClass}>Dialysis Type</label>
+            <label htmlFor="dialysisType" className={labelClass}>Tipo de Diálise</label>
             <select id="dialysisType" name="dialysisType" value={formData.dialysisType} onChange={handleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-slate-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-              <option>Hemodialysis</option>
-              <option>Peritoneal Dialysis</option>
-              <option>None</option>
+              <option value="Hemodialysis">Hemodiálise</option>
+              <option value="Peritoneal Dialysis">Diálise Peritoneal</option>
+              <option value="None">Nenhuma</option>
             </select>
           </div>
         </fieldset>
 
         <fieldset className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-4">
-          <legend className="text-lg font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-2 col-span-full">Anemia Panel</legend>
+          <legend className="text-lg font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-2 col-span-full">Painel de Anemia</legend>
           <div>
-              <label htmlFor="hemoglobin" className={labelClass}>Hemoglobin <span className="text-xs text-slate-500">(g/dL)</span></label>
+              <label htmlFor="hemoglobin" className={labelClass}>Hemoglobina <span className="text-xs text-slate-500">(g/dL)</span></label>
               <input type="number" name="hemoglobin" id="hemoglobin" value={formData.hemoglobin} onChange={handleChange} required step="0.1" className={getInputClass('hemoglobin')} />
               {errors.hemoglobin && <p className="mt-1 text-xs text-red-600">{errors.hemoglobin}</p>}
           </div>
           <div>
-              <label htmlFor="ferritin" className={labelClass}>Ferritin <span className="text-xs text-slate-500">(ng/mL)</span></label>
+              <label htmlFor="ferritin" className={labelClass}>Ferritina <span className="text-xs text-slate-500">(ng/mL)</span></label>
               <input type="number" name="ferritin" id="ferritin" value={formData.ferritin} onChange={handleChange} required step="1" className={getInputClass('ferritin')} />
               {errors.ferritin && <p className="mt-1 text-xs text-red-600">{errors.ferritin}</p>}
           </div>
           <div>
-              <label htmlFor="tsat" className={labelClass}>TSAT <span className="text-xs text-slate-500">(%)</span></label>
+              <label htmlFor="tsat" className={labelClass}>IST <span className="text-xs text-slate-500">(%)</span></label>
               <input type="number" name="tsat" id="tsat" value={formData.tsat} onChange={handleChange} required step="1" className={getInputClass('tsat')} />
               {errors.tsat && <p className="mt-1 text-xs text-red-600">{errors.tsat}</p>}
           </div>
         </fieldset>
         
         <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-4">
-          <legend className="text-lg font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-2 col-span-full">Mineral & Bone Disorder Panel</legend>
+          <legend className="text-lg font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-2 col-span-full">Painel de Distúrbio Mineral e Ósseo</legend>
           <div>
-              <label htmlFor="calcium" className={labelClass}>Calcium <span className="text-xs text-slate-500">(mg/dL)</span></label>
+              <label htmlFor="calcium" className={labelClass}>Cálcio <span className="text-xs text-slate-500">(mg/dL)</span></label>
               <input type="number" name="calcium" id="calcium" value={formData.calcium} onChange={handleChange} required step="0.1" className={getInputClass('calcium')} />
               {errors.calcium && <p className="mt-1 text-xs text-red-600">{errors.calcium}</p>}
           </div>
           <div>
-              <label htmlFor="phosphorus" className={labelClass}>Phosphorus <span className="text-xs text-slate-500">(mg/dL)</span></label>
+              <label htmlFor="phosphorus" className={labelClass}>Fósforo <span className="text-xs text-slate-500">(mg/dL)</span></label>
               <input type="number" name="phosphorus" id="phosphorus" value={formData.phosphorus} onChange={handleChange} required step="0.1" className={getInputClass('phosphorus')} />
               {errors.phosphorus && <p className="mt-1 text-xs text-red-600">{errors.phosphorus}</p>}
           </div>
@@ -159,7 +159,7 @@ const PatientDataForm: React.FC<PatientDataFormProps> = ({ onSubmit, isLoading }
               {errors.pth && <p className="mt-1 text-xs text-red-600">{errors.pth}</p>}
           </div>
           <div>
-              <label htmlFor="alkalinePhosphatase" className={labelClass}>Alk Phos <span className="text-xs text-slate-500">(U/L)</span></label>
+              <label htmlFor="alkalinePhosphatase" className={labelClass}>Fosf. Alcalina <span className="text-xs text-slate-500">(U/L)</span></label>
               <input type="number" name="alkalinePhosphatase" id="alkalinePhosphatase" onChange={handleChange} required step="1" className={getInputClass('alkalinePhosphatase')} />
               {errors.alkalinePhosphatase && <p className="mt-1 text-xs text-red-600">{errors.alkalinePhosphatase}</p>}
           </div>
@@ -177,9 +177,9 @@ const PatientDataForm: React.FC<PatientDataFormProps> = ({ onSubmit, isLoading }
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Analyzing...
+                Analisando...
               </>
-            ) : 'Analyze Lab Results'}
+            ) : 'Analisar Exames'}
           </button>
         </div>
       </form>
