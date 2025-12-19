@@ -27,6 +27,21 @@ const responseSchema = {
   required: ['anemiaAnalysis', 'mbdAnalysis', 'overallSummary']
 };
 
+const extractionSchema = {
+  type: Type.OBJECT,
+  properties: {
+    ckdStage: { type: Type.STRING, enum: ['3a', '3b', '4', '5', '5D'], description: 'Estágio da DRC detectado' },
+    dialysisType: { type: Type.STRING, enum: ['Hemodialysis', 'Peritoneal Dialysis', 'None'], description: 'Modalidade de diálise detectada' },
+    egfr: { type: Type.NUMBER, description: 'Taxa de Filtração Glomerular (TFG)' },
+    hemoglobin: { type: Type.NUMBER, description: 'Valor da Hemoglobina em g/dL' },
+    ferritin: { type: Type.NUMBER, description: 'Valor da Ferritina em ng/mL' },
+    tsat: { type: Type.NUMBER, description: 'Saturação de Transferrina em %' },
+    calcium: { type: Type.NUMBER, description: 'Cálcio Total em mg/dL' },
+    phosphorus: { type: Type.NUMBER, description: 'Fósforo em mg/dL' },
+    pth: { type: Type.NUMBER, description: 'Paratormônio (PTH) em pg/mL' },
+    alkalinePhosphatase: { type: Type.NUMBER, description: 'Fosfatase Alcalina em U/L' }
+  }
+};
 
 export async function analyzePatientData(data: PatientData): Promise<AnalysisResult> {
   if (!process.env.API_KEY) {
@@ -72,5 +87,40 @@ export async function analyzePatientData(data: PatientData): Promise<AnalysisRes
   } catch (error) {
     console.error("Error calling Gemini API:", error);
     throw new Error("Failed to get a valid analysis from the AI model.");
+  }
+}
+
+export async function extractPatientDataFromFile(fileBase64: string, mimeType: string): Promise<Partial<PatientData>> {
+  if (!process.env.API_KEY) {
+    throw new Error("API_KEY environment variable not set.");
+  }
+  
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: [
+        {
+          inlineData: {
+            data: fileBase64,
+            mimeType: mimeType
+          }
+        },
+        {
+          text: "Extract the following lab values from this medical report. Convert values to the specified units if necessary (e.g., calcium in mg/dL, hemoglobin in g/dL). Return ONLY the JSON object."
+        }
+      ],
+      config: {
+        systemInstruction: "You are a medical data extraction specialist. Extract lab values accurately. If a value is not found, omit it from the JSON. Respond only with the JSON object.",
+        responseMimeType: 'application/json',
+        responseSchema: extractionSchema,
+      }
+    });
+    
+    return JSON.parse(response.text.trim());
+  } catch (error) {
+    console.error("Error extracting from document:", error);
+    throw new Error("Não foi possível extrair os dados do documento.");
   }
 }

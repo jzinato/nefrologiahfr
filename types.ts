@@ -23,9 +23,16 @@ export interface AnalysisResult {
   overallSummary: string;
 }
 
+export interface PatientProfile {
+  name: string;
+  patientId: string;
+  dob: string;
+}
+
 export interface HistoryEntry {
   id: string;
   timestamp: number;
   patientData: PatientData;
   result: AnalysisResult;
+  patientProfile?: PatientProfile;
 }

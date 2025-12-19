@@ -1,6 +1,8 @@
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { PatientData } from '../types';
+import { extractPatientDataFromFile } from '../services/geminiService';
+import { FileUpIcon } from './Icons';
 
 interface PatientDataFormProps {
   onSubmit: (data: PatientData) => void;
@@ -36,8 +38,10 @@ const PatientDataForm: React.FC<PatientDataFormProps> = ({ onSubmit, isLoading, 
   });
 
   const [showCalculator, setShowCalculator] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
   const [calcData, setCalcData] = useState({ creatinine: 1.2, age: 60, sex: 'male' as 'male' | 'female' });
   const [errors, setErrors] = useState<Partial<Record<keyof PatientData, string>>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (initialData) {
@@ -75,6 +79,35 @@ const PatientDataForm: React.FC<PatientDataFormProps> = ({ onSubmit, isLoading, 
             [key]: error
         }));
     }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsExtracting(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const base64 = (reader.result as string).split(',')[1];
+        const extracted = await extractPatientDataFromFile(base64, file.type);
+        
+        setFormData(prev => ({
+          ...prev,
+          ...extracted
+        }));
+        
+        // Limpar erros após preenchimento automático
+        setErrors({});
+        alert("Dados extraídos com sucesso! Verifique os campos antes de confirmar.");
+      } catch (err) {
+        alert(err instanceof Error ? err.message : "Erro ao processar documento.");
+      } finally {
+        setIsExtracting(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const calculateCKDEPI = () => {
@@ -120,12 +153,38 @@ const PatientDataForm: React.FC<PatientDataFormProps> = ({ onSubmit, isLoading, 
   };
 
   const getInputClass = (fieldName: keyof PatientData) => {
-    return `mt-1 block w-full shadow-sm sm:text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 ${errors[fieldName] ? 'border-red-500' : 'border-slate-300'}`;
+    return `mt-1 block w-full shadow-sm sm:text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 transition-colors ${isExtracting ? 'bg-slate-50 opacity-50' : ''} ${errors[fieldName] ? 'border-red-500' : 'border-slate-300'}`;
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Dados do Exame</h2>
+    <div className="bg-white p-6 rounded-lg shadow-md relative overflow-hidden">
+      {isExtracting && (
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-[1px] z-20 flex flex-col items-center justify-center animate-in fade-in duration-300">
+           <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+           <p className="text-sm font-bold text-blue-800">Extraindo dados do laudo...</p>
+           <p className="text-[10px] text-slate-500 mt-1">Isso pode levar alguns segundos.</p>
+        </div>
+      )}
+
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-slate-900">Dados do Exame</h2>
+        <button 
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 text-xs font-bold rounded-lg hover:bg-blue-100 border border-blue-200 transition-colors"
+        >
+          <FileUpIcon className="w-4 h-4 mr-1.5" />
+          Importar Laudo
+        </button>
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          className="hidden" 
+          accept="application/pdf,image/*" 
+          onChange={handleFileUpload}
+        />
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         
         <fieldset className="grid grid-cols-1 gap-y-4 gap-x-4">
@@ -229,7 +288,7 @@ const PatientDataForm: React.FC<PatientDataFormProps> = ({ onSubmit, isLoading, 
 
         <button
           type="submit"
-          disabled={isLoading || !formIsValid}
+          disabled={isLoading || !formIsValid || isExtracting}
           className="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400"
         >
           {isLoading ? 'Analisando...' : 'Analisar Exames'}

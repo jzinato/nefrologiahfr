@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { PatientData, AnalysisResult, HistoryEntry } from './types';
+import { PatientData, AnalysisResult, HistoryEntry, PatientProfile } from './types';
 import { analyzePatientData } from './services/geminiService';
 import PatientDataForm from './components/PatientDataForm';
 import ResultsDisplay from './components/ResultsDisplay';
@@ -63,6 +63,12 @@ const App: React.FC = () => {
     }
   };
 
+  const handleUpdateHistoryEntry = (id: string, profile: PatientProfile) => {
+    setHistory(prev => prev.map(entry => 
+      entry.id === id ? { ...entry, patientProfile: profile } : entry
+    ));
+  };
+
   const handleSelectHistory = (entry: HistoryEntry) => {
     if (isComparisonMode) {
       handleToggleSelectForComparison(entry.id);
@@ -104,6 +110,10 @@ const App: React.FC = () => {
       return [prev[0], id];
     });
   };
+
+  const activeHistoryEntry = useMemo(() => {
+    return history.find(h => h.id === activeHistoryId);
+  }, [history, activeHistoryId]);
 
   const comparisonEntries = useMemo(() => {
     return history.filter(h => selectedComparisonIds.includes(h.id));
@@ -155,6 +165,8 @@ const App: React.FC = () => {
               error={error}
               isComparisonMode={isComparisonMode}
               comparisonEntries={comparisonEntries}
+              activeEntry={activeHistoryEntry}
+              onUpdateProfile={activeHistoryId ? (profile) => handleUpdateHistoryEntry(activeHistoryId, profile) : undefined}
             />
           </div>
         </div>
