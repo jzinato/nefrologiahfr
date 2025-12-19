@@ -2,6 +2,7 @@
 export interface PatientData {
   ckdStage: '3a' | '3b' | '4' | '5' | '5D';
   dialysisType: 'Hemodialysis' | 'Peritoneal Dialysis' | 'None';
+  egfr: number;
   hemoglobin: number;
   ferritin: number;
   tsat: number;
@@ -20,4 +21,11 @@ export interface AnalysisResult {
   anemiaAnalysis: AnalysisSection;
   mbdAnalysis: AnalysisSection;
   overallSummary: string;
+}
+
+export interface HistoryEntry {
+  id: string;
+  timestamp: number;
+  patientData: PatientData;
+  result: AnalysisResult;
 }

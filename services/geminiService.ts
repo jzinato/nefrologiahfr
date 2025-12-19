@@ -38,6 +38,7 @@ export async function analyzePatientData(data: PatientData): Promise<AnalysisRes
   const patientInfo = `
     - CKD Stage: ${data.ckdStage}
     - Dialysis Type: ${data.dialysisType}
+    - eGFR (TFG estimada): ${data.egfr} mL/min/1.73m²
     - Hemoglobin (g/dL): ${data.hemoglobin}
     - Ferritin (ng/mL): ${data.ferritin}
     - Transferrin Saturation (%): ${data.tsat}
@@ -56,7 +57,7 @@ export async function analyzePatientData(data: PatientData): Promise<AnalysisRes
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
         systemInstruction: `You are a nephrology expert assistant. Your task is to analyze patient lab results based *strictly* on the provided Brazilian Clinical Protocols and Therapeutic Guidelines (PCDT). Do not use any external knowledge. Provide a structured analysis and recommendations in a JSON format. The analysis should reference specific targets and criteria from the provided context. The recommendations should be actionable and based on the treatment flowcharts and guidelines in the context. Here is the PCDT context: ${pcdtContext}`,
