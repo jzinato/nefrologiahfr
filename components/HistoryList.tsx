@@ -37,6 +37,9 @@ const HistoryList: React.FC<HistoryListProps> = ({
     );
   }
 
+  // Use shallow copy before sorting to avoid mutating props
+  const sortedEntries = [...entries].sort((a, b) => b.timestamp - a.timestamp);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mt-6">
       <div className="flex items-center justify-between mb-2">
@@ -68,7 +71,7 @@ const HistoryList: React.FC<HistoryListProps> = ({
       )}
 
       <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-        {entries.sort((a, b) => b.timestamp - a.timestamp).map((entry) => {
+        {sortedEntries.map((entry) => {
           const isSelected = selectedComparisonIds.includes(entry.id);
           const isActive = currentId === entry.id;
 
@@ -77,8 +80,8 @@ const HistoryList: React.FC<HistoryListProps> = ({
               key={entry.id}
               className={`group relative p-3 rounded-md border transition-all cursor-pointer ${
                 isComparisonMode
-                  ? isSelected ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-slate-300'
-                  : isActive ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+                  ? (isSelected ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-slate-300')
+                  : (isActive ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50')
               }`}
               onClick={() => isComparisonMode ? onToggleSelectForComparison(entry.id) : onSelect(entry)}
             >

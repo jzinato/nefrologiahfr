@@ -16,11 +16,9 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
-  // Comparison Mode state
   const [isComparisonMode, setIsComparisonMode] = useState<boolean>(false);
   const [selectedComparisonIds, setSelectedComparisonIds] = useState<string[]>([]);
 
-  // Carregar histórico do localStorage na montagem
   useEffect(() => {
     const savedHistory = localStorage.getItem('drc_exam_history');
     if (savedHistory) {
@@ -32,7 +30,6 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Salvar histórico no localStorage sempre que mudar
   useEffect(() => {
     localStorage.setItem('drc_exam_history', JSON.stringify(history));
   }, [history]);
@@ -43,25 +40,24 @@ const App: React.FC = () => {
     setAnalysisResult(null);
     setPatientData(data);
     setActiveHistoryId(undefined);
-    setIsComparisonMode(false); // Disable comparison when doing a new analysis
+    setIsComparisonMode(false);
     
     try {
       const result = await analyzePatientData(data);
       setAnalysisResult(result);
       
-      // Adicionar ao histórico
       const newEntry: HistoryEntry = {
         id: Date.now().toString(),
         timestamp: Date.now(),
         patientData: data,
-        result: result,
+        result: result
       };
       setHistory(prev => [newEntry, ...prev]);
       setActiveHistoryId(newEntry.id);
       
     } catch (err) {
       console.error(err);
-      setError('Ocorreu um erro ao analisar os dados. Por favor, tente novamente.');
+      setError('Ocorreu um erro ao analisar os dados.');
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +84,7 @@ const App: React.FC = () => {
   };
 
   const handleClearHistory = () => {
-    if (window.confirm("Tem certeza que deseja apagar todo o histórico de exames?")) {
+    if (window.confirm("Apagar todo o histórico?")) {
       setHistory([]);
       setActiveHistoryId(undefined);
       setSelectedComparisonIds([]);
@@ -97,24 +93,14 @@ const App: React.FC = () => {
   };
 
   const handleToggleComparisonMode = () => {
-    setIsComparisonMode(!isComparisonMode);
-    if (!isComparisonMode) {
-      // Entering mode: if we had an active single view, maybe select it as first item?
-      // For simplicity, just start fresh
-      setSelectedComparisonIds([]);
-    }
+    setIsComparisonMode(prev => !prev);
+    setSelectedComparisonIds([]);
   };
 
   const handleToggleSelectForComparison = (id: string) => {
     setSelectedComparisonIds(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(item => item !== id);
-      }
-      if (prev.length < 2) {
-        return [...prev, id];
-      }
-      // If already 2, maybe replace the last one or do nothing
-      // Let's replace the second one to keep it to 2
+      if (prev.includes(id)) return prev.filter(item => item !== id);
+      if (prev.length < 2) return [...prev, id];
       return [prev[0], id];
     });
   };
@@ -126,7 +112,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans">
       <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="bg-blue-600 text-white p-2 rounded-full">
               <StethoscopeIcon className="w-6 h-6" />
@@ -140,7 +126,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="container mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="container mx-auto p-4 sm:p-6">
         <Disclaimer />
         
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -148,7 +134,7 @@ const App: React.FC = () => {
             <PatientDataForm 
               onSubmit={handleAnalyze} 
               isLoading={isLoading} 
-              initialData={activeHistoryId ? patientData || undefined : undefined} 
+              initialData={(activeHistoryId && patientData) ? patientData : undefined} 
             />
             <HistoryList 
               entries={history} 
@@ -175,8 +161,7 @@ const App: React.FC = () => {
       </main>
       
       <footer className="text-center py-8 mt-8 text-sm text-slate-500 border-t border-slate-200">
-        <p>&copy; {new Date().getFullYear()} IA Analisador de Exames DRC. Apenas para fins educacionais e informativos.</p>
-        <p className="mt-2 text-xs">Os dados são armazenados localmente no seu navegador.</p>
+        <p>&copy; {new Date().getFullYear()} IA Analisador de Exames DRC.</p>
       </footer>
     </div>
   );
